@@ -4,7 +4,10 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class ProductsGrid extends StatelessWidget {
-  const ProductsGrid({Key? key}) : super(key: key);
+  const ProductsGrid({Key? key, this.showOnlyFavorites = false})
+      : super(key: key);
+
+  final bool showOnlyFavorites;
 
   // final List<Product> loadedProducts;
 
@@ -19,9 +22,14 @@ class ProductsGrid extends StatelessWidget {
         crossAxisSpacing: 10,
         mainAxisSpacing: 10,
       ),
-      itemCount: productsData.items.length,
-      itemBuilder: (bContext, index) => ProductItem(
-        product: productsData.items[index],
+      itemCount: showOnlyFavorites
+          ? productsData.favorites.length
+          : productsData.items.length,
+      itemBuilder: (bContext, index) => ChangeNotifierProvider.value(
+        value: showOnlyFavorites
+            ? productsData.favorites[index]
+            : productsData.items[index],
+        child: const ProductItem(),
       ),
     );
   }
